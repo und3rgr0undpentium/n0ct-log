@@ -1,0 +1,87 @@
+{
+  "theme": "Dark",
+  "archetype": "Retro-Futurism / Cybersec Hacker",
+  "typography": {
+    "heading_font": "Fira Code",
+    "body_font": "IBM Plex Sans",
+    "scale": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tighter font-bold",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight font-semibold",
+      "h3": "text-xl sm:text-2xl font-medium",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm tracking-wide"
+    },
+    "instructions": "Use Fira Code for all headings, labels, tags, and terminal outputs to enforce the hacker aesthetic. Use IBM Plex Sans for long-form blog content to maintain readability. Ensure text is highly legible against the dark background."
+  },
+  "colors": {
+    "background": {
+      "primary": "#0A0A0A",
+      "secondary": "#121212",
+      "terminal": "#050505"
+    },
+    "text": {
+      "primary": "#E0E0E0",
+      "secondary": "#A0A0A0",
+      "muted": "#606060"
+    },
+    "accent": {
+      "primary": "#FF00FF",
+      "secondary": "#00FFFF",
+      "error": "#FF3333",
+      "success": "#00FF00"
+    },
+    "instructions": "Avoid the cliché Matrix green-on-black. Use a deep void black (#0A0A0A) as the primary canvas. The primary accent is Hot Magenta (#FF00FF) for critical elements (buttons, active states, glitch effects), complemented by Cyan (#00FFFF) for secondary interactive elements or links. Text should be tinted off-white."
+  },
+  "visual_enhancers": {
+    "scanlines": "Add a very subtle scanline overlay (repeating-linear-gradient) over the hero section and terminal boot sequence. Pointer-events must be 'none'.",
+    "glitch_effect": "Apply CSS keyframe glitch animations on hover for post titles and major CTAs. This should briefly shift text using text-shadow in Cyan and Magenta.",
+    "code_rain": "Use a subtle animated code-rain background on the hero section only. It should have a very low opacity (e.g., 10%) so it doesn't distract from the content.",
+    "cursor_blink": "Integrate a blinking block cursor (e.g., '█') after main headings or terminal text streams to simulate an active command line."
+  },
+  "layouts": {
+    "boot_sequence": {
+      "structure": "Full-screen fixed overlay covering the entire viewport.",
+      "content": "Rapidly appearing terminal logs (e.g., '[ OK ] Applying microcode update'). Uses typing animation. Skips on subsequent visits using sessionStorage.",
+      "style": "Font: Fira Code. Color: Cyan or Muted White. Background: Terminal Void Black. CRT scanline overlay."
+    },
+    "home_page": {
+      "hero": "Dark canvas with subtle code-rain background. Large typing animation tagline (e.g., 'Initializing connection...').",
+      "grid": "Bento-style or asymmetrical grid for blog posts. High density.",
+      "post_card": "Minimalist cardless design with a 1px solid border (#333). Glitch effect on title hover. Contains Tag chips, Date, Excerpt, and a blurred AI TL;DR that reveals on hover."
+    },
+    "post_detail": {
+      "header": "Monospace title with blinking cursor. Metadata (Date, Tags).",
+      "tldr_box": "A highlighted box at the top with a distinct border (Hot Magenta or Cyan) containing the AI-generated summary.",
+      "content": "Rendered Markdown. Editorial Sans (IBM Plex Sans) for body. Monospace for inline code and code blocks. Code blocks must have syntax highlighting (e.g., using PrismJS or highlight.js) with a dark theme."
+    },
+    "admin_dashboard": {
+      "layout": "High-density technical grid. Sidebar navigation.",
+      "components": "Shadcn UI data tables, forms for Markdown editing. Solid flat backgrounds with sharp edges."
+    }
+  },
+  "components": {
+    "tag_chip": {
+      "style": "Small, uppercase, tracking-widest, monospace font. 1px border. Hover state inverses background/text color."
+    },
+    "search_bar": {
+      "style": "Retro-terminal input field. Prefix with a prompt character (e.g., '>'). Blinking cursor."
+    },
+    "tldr_reveal": {
+      "style": "Initially blurred or hidden behind a 'Decrypting...' state. Reveals the summary on click or hover with a short transition."
+    }
+  },
+  "motion": {
+    "boot_sequence_timing": "Each log line appears rapidly (e.g., 50-100ms interval). Entire sequence should take no more than 3 seconds before wiping down/fading out.",
+    "typing_animation": "Use standard character-by-character reveal for hero tagline.",
+    "glitch": "CSS keyframes for glitch effect: small random translations and text-shadow adjustments."
+  },
+  "media": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHwxfHxjeWJlcnNlY3VyaXR5JTIwaGFja2VyJTIwY29kaW5nfGVufDB8fHx8MTc4NzAyNjY3NXww&ixlib=rb-4.1.0&q=85",
+      "admin_bg": "https://images.unsplash.com/photo-1680992046626-418f7e910589?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODh8MHwxfHNlYXJjaHwxfHxkYXJrJTIwZnV0dXJpc3RpYyUyMHNlcnZlciUyMHJvb218ZW58MHx8fHwxNzg3MDI2Njc1fDA&ixlib=rb-4.1.0&q=85",
+      "author_portrait": "https://images.unsplash.com/photo-1666615435088-4865bf5ed3fd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxNzV8MHwxfHNlYXJjaHwyfHxoYWNrZXIlMjBwb3J0cmFpdCUyMGFub255bW91c3xlbnwwfHx8fDE3ODcwMjY2NzV8MA&ixlib=rb-4.1.0&q=85"
+    }
+  },
+  "GENERAL_UI_UX_DESIGN_GUIDELINES": "All interactive and key informational elements MUST include a data-testid attribute to facilitate robust automated testing. Avoid applying universal transitions (e.g., transition: all). Create depth through layered design elements and micro-animations for interactive states. Do not center-align long form text. Use generous padding inside containers with borders.",
+  "instructions_to_main_agent": "Ensure the boot sequence only triggers once per session by utilizing sessionStorage. Build the boot overlay as a separate high-z-index component that unmounts. Use Lucide React for standard icons, but prefer ASCII art or raw text symbols where it enhances the terminal vibe. Do not use generic Shadcn cards for blog posts; build custom layout divs with sharp 1px borders. Add 'data-testid' to all buttons, inputs, and major links."
+}
