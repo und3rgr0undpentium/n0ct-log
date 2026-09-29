@@ -1,0 +1,8 @@
+# Ignore local dev files when building the frontend image
+node_modules
+build
+.env
+.env.development
+.env.local
+npm-debug.log
+yarn-error.log

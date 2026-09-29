@@ -1,58 +1,76 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { Toaster } from "sonner";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import api from "@/lib/api";
+import { AuthProvider } from "@/context/AuthContext";
+import BootSequence from "@/components/BootSequence";
+import Navbar from "@/components/Navbar";
+import Home from "@/pages/Home";
+import PostDetail from "@/pages/PostDetail";
+import About from "@/pages/About";
+import AdminLogin from "@/pages/AdminLogin";
+import AdminDashboard from "@/pages/AdminDashboard";
+import PostEditor from "@/pages/PostEditor";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+function AppShell() {
+  const [booted, setBooted] = useState(() => sessionStorage.getItem("hack_booted") === "1");
+  const [site, setSite] = useState(null);
 
   useEffect(() => {
-    helloWorldApi();
+    api.get("/site").then((r) => setSite(r.data)).catch(() => setSite({}));
   }, []);
 
+  const handleBooted = () => {
+    sessionStorage.setItem("hack_booted", "1");
+    setBooted(true);
+  };
+
   return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
+    <>
+      {!booted && <BootSequence onDone={handleBooted} />}
+      {booted && (
+        <>
+          <Navbar site={site} />
+          <main data-testid="main-content">
+            <Routes>
+              <Route path="/" element={<Home site={site} />} />
+              <Route path="/post/:slug" element={<PostDetail />} />
+              <Route path="/about" element={<About site={site} />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/new" element={<ProtectedRoute><PostEditor /></ProtectedRoute>} />
+              <Route path="/admin/edit/:id" element={<ProtectedRoute><PostEditor /></ProtectedRoute>} />
+              <Route path="*" element={
+                <div className="max-w-3xl mx-auto px-6 py-24 font-mono text-[#FF3333]">
+                  404: fragment not found
+                </div>
+              } />
+            </Routes>
+          </main>
+          <footer className="max-w-6xl mx-auto px-4 sm:px-6 py-10 border-t border-[#262626] mt-16 font-mono text-xs text-[#606060] flex flex-wrap gap-3 justify-between">
+            <div>© {new Date().getFullYear()} {site?.handle || "n0ct"} · powered by curiosity + caffeine</div>
+            <div>[ session_uptime: {new Date().toTimeString().slice(0,8)} ]</div>
+          </footer>
+        </>
+      )}
+    </>
   );
-};
+}
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppShell />
+          <Toaster theme="dark" position="top-right" />
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }
 
 export default App;
-
-

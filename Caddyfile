@@ -1,0 +1,14 @@
+# Replace this with your domain (or with :80 if you have no domain).
+{$PUBLIC_HOST} {
+    encode gzip zstd
+
+    # /api/* -> backend
+    handle /api/* {
+        reverse_proxy backend:8001
+    }
+
+    # everything else -> React frontend (Nginx inside container)
+    handle {
+        reverse_proxy frontend:80
+    }
+}

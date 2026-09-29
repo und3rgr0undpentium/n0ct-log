@@ -1,0 +1,30 @@
+{
+  "summary": "Smoke test of n0ct.log blog. Backend + frontend end-to-end verified: auth (good/bad), site, posts (list, search, tag filter, single-slug, 404), TL;DR via Emergent LLM (fresh + cached), admin CRUD (create/update-with-slug-regeneration/delete), site update, boot sequence, home search/tag filter, post detail, TL;DR reveal, admin login flow, and admin dashboard listing.",
+  "tested_scope": ["backend", "frontend", "auth", "integration"],
+  "passed": [
+    "POST /api/auth/login admin/admin123 -> 200 + JWT; wrong password -> 401",
+    "GET /api/auth/me -> {username:'admin', role:'admin'}",
+    "GET /api/site -> handle 'n0ct', tagline, bio",
+    "GET /api/posts -> 3 seeded posts; ?q=homelab returns 1; ?tag=nmap returns 1",
+    "GET /api/posts/tags -> 7 sorted unique tags",
+    "GET /api/posts/{slug} -> 200 for existing, 404 for unknown slug",
+    "POST /api/posts/{id}/tldr -> Claude-generated TL;DR ('cached':false), 2nd call returns cached:true",
+    "POST /api/admin/posts without token -> 401; with admin token -> 200 with auto-generated slug",
+    "PUT /api/admin/posts/{id} title change regenerates slug (smoke-test-post -> smoke-test-post-renamed) and updated_at moves",
+    "DELETE /api/admin/posts/{id} -> {deleted: id}",
+    "PUT /api/admin/site -> updated site config returned",
+    "Frontend boot sequence (data-testid='boot-sequence') visible on first visit and dismisses; sessionStorage 'hack_booted' suppresses it on reload",
+    "Home: search-input filters 3 -> 1 for 'homelab'; filter-tag-nmap chip filters to 1 post; 7 tag chips + 3 post cards render",
+    "Post detail loads for slug; TL;DR box present; decrypt button calls backend and reveals tldr-content (178 chars)",
+    "/about renders bio text",
+    "Admin: unauth /admin redirects to /admin/login",
+    "Admin login: wrong password shows data-testid='login-error'; admin/admin123 navigates to /admin dashboard listing all 3 posts with edit/rm/new-post controls"
+  ],
+  "failed": [],
+  "action_items": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "Post editor form (create/edit via UI submit) and delete-from-UI were not click-through tested end-to-end due to time budget, but the underlying admin CRUD APIs were fully exercised with an admin bearer token and the dashboard renders the correct posts and controls. Recommend the full testing agent cover the PostEditor UI flow next."
+}
+
